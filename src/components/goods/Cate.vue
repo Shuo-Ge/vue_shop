@@ -39,11 +39,17 @@
           <el-tag type="success" v-else-if="scope.row.cat_level === 1"
             >二级</el-tag
           >
+
           <el-tag type="warning" v-else>三级</el-tag>
         </template>
-        <template slot="opt">
+        <template slot-scope="scope" slot="opt">
           <el-button type="primary" icon="el-icon-edit">编辑</el-button>
-          <el-button type="danger" icon="el-icon-delete">删除</el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            @click="deleteCate(scope.row.cat_id)"
+            >删除</el-button
+          >
         </template>
       </tree-table>
       <!-- 分页 -->
@@ -237,6 +243,15 @@ export default {
       this.selectKeys = []
       this.addCateForm.cat_pid = 0
       this.addCateForm.cat_level = 0
+    },
+    // 删除商品分类
+    async deleteCate(id) {
+      const { data: res } = await this.$http.delete('categories/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除失败')
+      }
+      this.$message.success('删除成功')
+      this.getCateList()
     },
   },
 }
